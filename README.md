@@ -1,27 +1,18 @@
-# React + TypeScript + Vite
+# Front End MenuGG CMS (React Typescript)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Hi, I am currently working on my personal Fullstack CMS (React, Typescript, ExpressJS, Sequelize, PostgreSQL) project called MenuGG CMS. You can check it out live at [https://menugg-cms.vercel.app/](https://menugg-cms.vercel.app/).
 
-Currently, two official plugins are available:
+For the backend, you can [check it out here](https://github.com/raflij/api-menugg-backend)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This project is a continuation of my previous work on [MenuGG (Digital Menu Paperless)](https://menugg-cms.vercel.app/) that I have already completed.
 
-## Expanding the ESLint configuration
+In the previous project, I focused solely on the frontend. However, in this iteration, I intend to establish a connection to a database and create a Content Management System.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## In this project, I have planned several features for MenuGG CMS:
+- Authentication (Done...)
+- Analytics (Coming soon)
+- Restaurant Management (On Progres...)
+- Menu Management (On Progres...)
+- Upgrade Plan (On Progres...)
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Stay tuned to get updates about this awesome project.
