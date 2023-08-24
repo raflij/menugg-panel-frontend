@@ -1,0 +1,30 @@
+import React from 'react'
+
+interface Props {
+    time: string;
+    ringColor: string;
+    message: string;
+    isLast?: boolean;
+}
+
+const DashboardActivityCard: React.FC<Props> = ({ time, ringColor, message, isLast }) => {
+    return (
+        <div className='relative flex items-center h-10 space-x-2 px-4'>
+            <div className='relative flex-none'>
+                <p className='text-sm text-neutral-700'>{time}</p></div>
+            <div className='relative flex flex-col items-center justify-center flex-none'>
+                <div className={`relative rounded-full w-[16px] h-[16px] border-2 ${ringColor}`}></div>
+                {!isLast &&
+                    <div className='relative'>
+                        <div className='absolute h-6 w-[2px] bg-neutral-300'></div>
+                    </div>
+                }
+            </div>
+            <div className='relative flex-none'>
+                <p className='text-sm text-neutral-700'>{message}</p>
+            </div>
+        </div>
+    )
+}
+
+export default DashboardActivityCard
