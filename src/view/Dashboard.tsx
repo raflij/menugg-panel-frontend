@@ -1,9 +1,41 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { UserAuth } from '../context/AuthContext'
 import DashboardCard from '../components/Dashboard/DashboardCard';
 import DashboardActivityCard from '../components/Dashboard/DashboardActivityCard';
 import AlertDashboard from '../components/UI/Alert/AlertDashboard';
 
+interface Activity {
+    activityType: string;
+    activityMessage: string;
+    ipAddress: string;
+    createdAt: string;
+}
+
 const Dashboard: React.FC = () => {
+    const {
+        formatDate,
+        recentActivityDashboard,
+        user
+    } = UserAuth();
+    const [recentActivity, setRecentActivity] = useState<Activity[]>([]);
+
+    useEffect(() => {
+        async function fetchActivity() {
+            try {
+                const res = await recentActivityDashboard(user as string);
+
+                if (Array.isArray(res)) {
+                    setRecentActivity(res);
+                } else {
+                    console.error('Invalid fetch data');
+                }
+            } catch (error) {
+                console.error('Error fetching activity:', error);
+            }
+        };
+
+        fetchActivity();
+    }, [recentActivityDashboard, user]);
     return (
         <div className='grow mb-4'>
             <div className='flex flex-wrap gap-2 items-center px-4'>
@@ -49,11 +81,11 @@ const Dashboard: React.FC = () => {
                             </h2>
                         </div>
                         <AlertDashboard
-                        message='Menu digital anda dapat menerima 2000 pengunjung bulan ini. '
-                        usage='Total pengunjung bulan ini: 1,660'
+                            message='Menu digital anda dapat menerima 2000 pengunjung bulan ini. '
+                            usage='Total pengunjung bulan ini: 1,660'
                         />
                         <AlertDashboard
-                        message='Kamu bisa menambahkan hingga 5 kategori menu dan 25 menu.'
+                            message='Kamu bisa menambahkan hingga 5 kategori menu dan 25 menu.'
                         />
                     </div>
                     <div className='px-4 py-6'>
@@ -61,31 +93,26 @@ const Dashboard: React.FC = () => {
                     </div>
                     <div className="bottom-0 rounded-b-md bg-gradient-to-r from-lime-400 to-yellow-400 h-1"></div>
                 </div>
-                <div className='flex-none bg-white shadow rounded-sm'>
+                <div className='flex-none bg-white shadow rounded-sm pb-6'>
                     <div className='px-4 py-5'>
                         <h1 className='text-lg text-neutral-500 font-medium'>Aktivitas Terbaru</h1>
                     </div>
-                    <DashboardActivityCard
-                        time='10:10'
-                        ringColor='border-red-400'
-                        message='Login dari Indonesia (192.168.1.100)'
-                    />
-                    <DashboardActivityCard
-                        time='10:10'
-                        ringColor='border-red-400'
-                        message='Login dari Indonesia (192.168.1.100)'
-                    />
-                    <DashboardActivityCard
-                        time='10:10'
-                        ringColor='border-yellow-400'
-                        message='Memperbarui menu'
-                    />
-                    <DashboardActivityCard
-                        time='10:10'
-                        ringColor='border-red-400'
-                        message='Login dari Indonesia (192.168.1.100)'
-                        isLast={true}
-                    />
+                    {recentActivity.length > 0 &&
+                        recentActivity.map((hasil, i) => (
+                            <DashboardActivityCard
+                                key={i}
+                                time={formatDate(hasil.createdAt)}
+                                ringColor={
+                                    hasil.activityType === 'login' ? 'border-red-400' : ''
+                                }
+                                message={hasil.activityMessage}
+                                ipAddress={hasil.ipAddress}
+                                isLast={
+                                    i === recentActivity.length - 1 && true
+                                }
+                            />
+                        ))
+                    }
                 </div>
             </div>
         </div>

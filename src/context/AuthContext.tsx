@@ -1,13 +1,16 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { format, isToday, isYesterday } from 'date-fns';
 import axios from 'axios';
 import validator from 'email-validator';
 
 interface UserContextType {
     login: (email: string, password: string) => void;
     signup: (email: string, password: string) => void; // Update this line to indicate the return type
+    recentActivityDashboard: (email: string) => void;
     user: string | null;
     handleLogout: () => void;
+    formatDate: (dateStr: string) => string;
 }
 
 interface AuthContextProviderProps {
@@ -134,9 +137,35 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({ childr
         navigate('/login');
     }
 
+    function recentActivityDashboard() {
+        const token = localStorage.getItem('token');
+        return new Promise(async (resolve, reject) => {
+            try {
+                const res = await axios.get(
+                    API_URL + '/api/dashboard',
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
+                resolve(res.data.activity)
+            } catch (e) {
+                reject(e);
+            }
+        })
+    }
+
+    function formatDate(dateStr: string): string {
+        const date = new Date(dateStr);
+        if (isToday(date)) {
+            return 'Today at ' + format(date, 'HH:mm');
+        } else if (isYesterday(date)) {
+            return 'Yesterday at ' + format(date, 'HH:mm');
+        } else {
+            return format(date, 'MM/dd/yyyy HH:mm');
+        }
+    }
+
     return (
         <UserContext.Provider value={{
-            login, signup, user, handleLogout
+            login, signup, user, handleLogout, recentActivityDashboard, formatDate
         }}>
             {children}
         </UserContext.Provider>
