@@ -14,6 +14,7 @@ interface Activity {
 const Dashboard: React.FC = () => {
     const {
         formatDate,
+        formatTime,
         recentActivityDashboard,
         user
     } = UserAuth();
@@ -101,11 +102,11 @@ const Dashboard: React.FC = () => {
                         recentActivity.map((hasil, i) => (
                             <DashboardActivityCard
                                 key={i}
-                                time={formatDate(hasil.createdAt)}
+                                time={formatTime(hasil.createdAt)}
                                 ringColor={
                                     hasil.activityType === 'login' ? 'border-red-400' : ''
                                 }
-                                message={hasil.activityMessage}
+                                message={formatDate(hasil.createdAt) + hasil.activityMessage}
                                 ipAddress={hasil.ipAddress}
                                 isLast={
                                     i === recentActivity.length - 1 && true

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { format, isToday, isYesterday } from 'date-fns';
 import axios from 'axios';
 import validator from 'email-validator';
@@ -11,6 +11,7 @@ interface UserContextType {
     user: string | null;
     handleLogout: () => void;
     formatDate: (dateStr: string) => string;
+    formatTime: (dateStr: string) => string;
 }
 
 interface AuthContextProviderProps {
@@ -25,15 +26,16 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({ childr
     const [user, setUser] = useState<string | null>(null);
 
     const navigate = useNavigate();
+    const location = useLocation();
 
     const API_URL = import.meta.env.VITE_APP_API_KEY;
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        if (!token) {
+        if (!token && location.pathname !== '/signup' && location.pathname !== '/login') {
             localStorage.removeItem('token');
             navigate('/login');
-        } else {
+        } else if (token && location.pathname !== '/signup' && location.pathname !== '/login') {
             axios.get(import.meta.env.VITE_APP_API_KEY + '/api/profile', { headers: { Authorization: `Bearer ${token}` } })
                 .then(hasil => {
                     if (hasil.data.response) {
@@ -152,20 +154,25 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({ childr
         })
     }
 
+    function formatTime(dateStr: string): string {
+        const date = new Date(dateStr);
+        return format(date, 'HH:mm');
+    }
+
     function formatDate(dateStr: string): string {
         const date = new Date(dateStr);
         if (isToday(date)) {
-            return 'Today at ' + format(date, 'HH:mm');
+            return 'Today ';
         } else if (isYesterday(date)) {
-            return 'Yesterday at ' + format(date, 'HH:mm');
+            return 'Yesterday ';
         } else {
-            return format(date, 'MM/dd/yyyy HH:mm');
+            return format(date, 'MM/dd/yyyy');
         }
     }
 
     return (
         <UserContext.Provider value={{
-            login, signup, user, handleLogout, recentActivityDashboard, formatDate
+            login, signup, user, handleLogout, recentActivityDashboard, formatDate, formatTime
         }}>
             {children}
         </UserContext.Provider>
