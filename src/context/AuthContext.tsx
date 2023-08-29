@@ -6,8 +6,18 @@ import validator from 'email-validator';
 
 interface UserContextType {
     login: (email: string, password: string) => void;
-    signup: (email: string, password: string) => void; // Update this line to indicate the return type
-    recentActivityDashboard: (email: string) => void;
+    signup: (email: string, password: string) => void;
+    saveRestaurant: (
+        restaurantName: string,
+        phoneNumber: string,
+        description: string,
+        location: string,
+        googleMapLink: string,
+        imageUrl: string,
+        email: string,
+    ) => void;
+    fetchRestaurant: () => void;
+    recentActivityDashboard: () => void;
     user: string | null;
     handleLogout: () => void;
     formatDate: (dateStr: string) => string;
@@ -139,6 +149,54 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({ childr
         navigate('/login');
     }
 
+    function saveRestaurant(
+        restaurantName: string,
+        phoneNumber: string,
+        description: string,
+        location: string,
+        googleMapLink: string,
+        imageUrl: string,
+        email: string
+    ) {
+        return new Promise(async (resolve, reject) => {
+            const token = localStorage.getItem('token');
+            try {
+                const save = await axios.post(API_URL + '/api/restaurant/save', {
+                    email: email,
+                    restaurantName: restaurantName,
+                    phoneNumber: phoneNumber,
+                    description: description,
+                    location: location,
+                    googleMapLink: googleMapLink,
+                    imageUrl: imageUrl
+                }, { headers: { Authorization: `Bearer ${token}` } })
+                if (save.data.response === false) {
+                    reject(save.data.message);
+                }
+                if (save.data.response === true) {
+                    resolve(true)
+                }
+            } catch (e) {
+                reject(e);
+            }
+        })
+    }
+
+    function fetchRestaurant() {
+        const token = localStorage.getItem('token');
+        return new Promise(async (resolve, reject) => {
+            try {
+                const res = await axios.get(
+                    API_URL + '/api/restaurant/data',
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
+                resolve(res.data.info)
+            } catch (e) {
+                reject(e);
+            }
+        })
+    }
+
     function recentActivityDashboard() {
         const token = localStorage.getItem('token');
         return new Promise(async (resolve, reject) => {
@@ -172,7 +230,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({ childr
 
     return (
         <UserContext.Provider value={{
-            login, signup, user, handleLogout, recentActivityDashboard, formatDate, formatTime
+            login, signup, user, handleLogout, recentActivityDashboard, formatDate, formatTime, saveRestaurant, fetchRestaurant
         }}>
             {children}
         </UserContext.Provider>

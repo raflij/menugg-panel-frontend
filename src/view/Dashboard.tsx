@@ -15,15 +15,14 @@ const Dashboard: React.FC = () => {
     const {
         formatDate,
         formatTime,
-        recentActivityDashboard,
-        user
+        recentActivityDashboard
     } = UserAuth();
     const [recentActivity, setRecentActivity] = useState<Activity[]>([]);
 
     useEffect(() => {
         async function fetchActivity() {
             try {
-                const res = await recentActivityDashboard(user as string);
+                const res = await recentActivityDashboard();
 
                 if (Array.isArray(res)) {
                     setRecentActivity(res);
@@ -36,7 +35,7 @@ const Dashboard: React.FC = () => {
         };
 
         fetchActivity();
-    }, [recentActivityDashboard, user]);
+    }, [recentActivityDashboard]);
     return (
         <div className='grow mb-4'>
             <div className='flex flex-wrap gap-2 items-center px-4'>
